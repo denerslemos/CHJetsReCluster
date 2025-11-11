@@ -2,7 +2,7 @@
 
 using namespace fastjet;
 
-void JetTrees(TString InputFileList, TString OutputFile){
+void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeelectrons){
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
@@ -123,6 +123,21 @@ void JetTrees(TString InputFileList, TString OutputFile){
         for (unsigned int i = 0; i < TrkRecoPx->GetSize(); ++i) {
             TVector3 mom((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i]);
             if (mom.Pt() < minCstPt || mom.Pt() > maxCstPt) continue;
+            if (removeelectrons){
+				// Find electron
+			    int chargePartIndex = i; 
+			    int elecIndex = -1;
+			    float elecIndexWeight = -1.0;
+		    	for(unsigned int itrkass = 0; itrkass < TrkPartAssocRec->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
+					if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
+					    if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
+							elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
+							elecIndexWeight = (*TrkPartAssocWeight)[itrkass];
+			      		}
+			  		}
+		      	}
+				if((*TrkMCGenPDG)[elecIndex] == 11) continue;
+            }
             PseudoJet p((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i], (*TrkRecoE)[i]);
             p.set_user_index(i);
             particles_reco.push_back(p);
@@ -132,14 +147,16 @@ void JetTrees(TString InputFileList, TString OutputFile){
         for (unsigned int i = 0; i < TrkGenPx->GetSize(); ++i) {
             TVector3 mom((*TrkGenPx)[i], (*TrkGenPy)[i], (*TrkGenPz)[i]);
             if (mom.Pt() < minCstPt || mom.Pt() > maxCstPt) continue;
+            if ((*TrkGenCharge)[i] == 0) continue;
+            if (removeelectrons) { if( (*TrkGenPDG)[i] == 11 ) continue; }
             PseudoJet p((*TrkGenPx)[i], (*TrkGenPy)[i], (*TrkGenPz)[i], (*TrkGenE)[i]);
             p.set_user_index(i);
             particles_gen.push_back(p);
         }
 
-
         // --- Loop over R values --- making jets
-        for (size_t iR = 0; iR < R_values.size(); ++iR) {
+        for (size_t iR = 0; iR < R_values.size(); ++iR) { 
+        
             double R = R_values[iR];
             TTree *tree = trees[iR];
             // Define algorithm
@@ -249,6 +266,9 @@ void JetTrees(TString InputFileList, TString OutputFile){
     // Write and close
     for (auto *tree : trees) tree->Write();
     OutFile->Close();
+
+	cout << "Total number of events: " << globalEvent << endl;    
+    
 
 }
 
