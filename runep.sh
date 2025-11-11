@@ -19,7 +19,7 @@ for qrange in "${q_ranges[@]}"; do
         log_file="./log/${qrange}/out_ep_${qrange}_${i}_b1_${b1}_b2_${b2}.log"
 
         echo "Running ROOT job for $qrange part $i with booleans $b1, $b2 ..."
-        root -l -q "src/JetTreesRecluster.C(\"$input_file\",\"$output_file\",$b1,$b2)" &> "$log_file" &
+        root -l -q "src/JetTreesRecluster.C(\"$input_file\",\"$output_file\",$b1,$b2)" &> "$log_file"
       done
     done
   done
