@@ -2,7 +2,7 @@
 
 using namespace fastjet;
 
-void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeelectrons){
+void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeelectrons, bool donhitcut){
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
@@ -123,6 +123,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
         for (unsigned int i = 0; i < TrkRecoPx->GetSize(); ++i) {
             TVector3 mom((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i]);
             if (mom.Pt() < minCstPt || mom.Pt() > maxCstPt) continue;
+            if (donhitcut) { if ( (*TrkRecoNhits)[i] < 4 ) continue; }
             if (removeelectrons){
 				// Find electron
 			    int chargePartIndex = i; 
@@ -206,6 +207,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
                 bool hasElectron = false;
                 float maxPtReco = -1.0;
                 std::vector<float> cpt, ceta, cphi;
+                std::vector<int> chits;
+                cpt->clear(); ceta->clear(); cphi->clear(); chits->clear();
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
@@ -213,6 +216,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
                     cpt.push_back(v3.Pt());
                     ceta.push_back(v3.Eta());
                     cphi.push_back(v3.Phi());
+                    chits.push_back((*TrkRecoNhits)[idx]);
                     if (v3.Pt() > maxPtReco) maxPtReco = v3.Pt();
 					// Find electron
 			    	int chargePartIndex = idx; 
@@ -232,6 +236,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
                 RecoJet_constituent_pt.push_back(cpt);
                 RecoJet_constituent_eta.push_back(ceta);
                 RecoJet_constituent_phi.push_back(cphi);
+                RecoJet_constituent_nhits.push_back(chits);
                 RecoJet_hasElectron.push_back(hasElectron);
                 RecoJet_maxPtPart_pt.push_back(maxPtReco);
             }
@@ -250,6 +255,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
                 bool hasGenNeutral = false;
                 float maxPtGen = -1.0;
                 std::vector<float> gpt, geta, gphi;
+				gpt->clear(); geta->clear(); gphi->clear(); 
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
