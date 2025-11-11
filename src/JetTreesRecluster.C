@@ -208,7 +208,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
                 float maxPtReco = -1.0;
                 std::vector<float> cpt, ceta, cphi;
                 std::vector<int> chits;
-                cpt->clear(); ceta->clear(); cphi->clear(); chits->clear();
+                cpt.clear(); ceta.clear(); cphi.clear(); chits.clear();
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
@@ -255,7 +255,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
                 bool hasGenNeutral = false;
                 float maxPtGen = -1.0;
                 std::vector<float> gpt, geta, gphi;
-				gpt->clear(); geta->clear(); gphi->clear(); 
+				gpt.clear(); geta.clear(); gphi.clear(); 
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
