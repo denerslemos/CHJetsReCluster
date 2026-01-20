@@ -49,10 +49,10 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	int EVETMULTGEN = 0;
 	int ScatteredERecId = 0;
 	int ScatteredEGenId = 0;
-	int EventQ2 = 0;
-	int Eventx = 0;
-	int EventQ2Gen = 0;
-	int EventxGen = 0;
+	float EventQ2 = 0;
+	float Eventx = 0;
+	float EventQ2Gen = 0;
+	float EventxGen = 0;
 
 	// Vertex
 	std::vector<float> Vertex_x;
