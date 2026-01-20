@@ -2,13 +2,13 @@
 
 using namespace fastjet;
 
-void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeelectrons, bool donhitcut){
+void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<float> R_values, int removeelectrons, int nhitcut){
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
     // Define R values
-    std::vector<float> R_values;
-    for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
+    //std::vector<float> R_values;
+    //for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
 
     double minCstPt            = 0.2 ;				 // minimum pT of objects
     double maxCstPt            = 100.;  			 // maximum pT of objects
@@ -45,6 +45,26 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
 	TFile *OutFile = TFile::Open(Form("%s",OutputFile.Data()),"RECREATE");	
 
 	int NEVENTS = 0;
+	int EVETMULTRECO = 0; 
+	int EVETMULTGEN = 0;
+	int ScatteredERecId = 0;
+	int ScatteredEGenId = 0;
+	int EventQ2 = 0;
+	int Eventx = 0;
+	int EventQ2Gen = 0;
+	int EventxGen = 0;
+
+	// Vertex
+	std::vector<float> Vertex_x;
+	std::vector<float> Vertex_y;
+	std::vector<float> Vertex_z;
+	std::vector<int> Vertex_ndf;
+	std::vector<float> Vertex_chi2;
+	std::vector<float> VertexErr_xx;
+	std::vector<float> VertexErr_yy;
+	std::vector<float> VertexErr_zz;
+	std::vector<int> Vertex_idx;
+
 	// Reco Jets (Variable-length vectors for multiple jets per event)
 	std::vector<float> RecoJet_pt;
 	std::vector<float> RecoJet_eta;
@@ -79,9 +99,27 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
 
         TString rStr = Form("JetTree_R0p%d", int(R * 10)); // e.g. R=0.1 → R0p1
         TTree *tree = new TTree(rStr, rStr);
-
+		// Event information
         tree->Branch("NEVENTS", &NEVENTS, "NEVENTS/I");
-
+		tree->Branch("EVETMULTRECO", &EVETMULTRECO, "EVETMULTRECO/I");
+		tree->Branch("EVETMULTGEN", &EVETMULTGEN, "EVETMULTGEN/I");
+		tree->Branch("EventQ2", &EventQ2, "EventQ2/I");
+		tree->Branch("Eventx", &Eventx, "Eventx/I");
+		tree->Branch("EventQ2Gen", &EventQ2Gen, "EventQ2Gen/I");
+		tree->Branch("EventxGen", &EventxGen, "EventxGen/I");
+        // Vertex
+        tree->Branch("Vertex_x", &Vertex_x);
+        tree->Branch("Vertex_y", &Vertex_y);
+        tree->Branch("Vertex_z", &Vertex_z);
+        tree->Branch("Vertex_ndf", &Vertex_ndf);
+        tree->Branch("Vertex_chi2", &Vertex_chi2);
+        tree->Branch("VertexErr_xx", &VertexErr_xx);
+        tree->Branch("VertexErr_yy", &VertexErr_yy);
+        tree->Branch("VertexErr_zz", &VertexErr_zz);
+        tree->Branch("Vertex_idx", &Vertex_idx);
+		// Scattered electron
+        tree->Branch("ScatteredERecId", &ScatteredERecId);
+        tree->Branch("ScatteredEGenId", &ScatteredEGenId);
         // Reco
         tree->Branch("RecoJet_pt", &RecoJet_pt);
         tree->Branch("RecoJet_eta", &RecoJet_eta);
@@ -117,14 +155,45 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
 	    if(globalEvent%50000 == 0) cout << "Events Processed: " << globalEvent << endl;
 	    globalEvent++;
 	    NEVENTS = globalEvent;
+	    
+	    // For Vertex
+	    Vertex_x.clear();
+		Vertex_y.clear();
+		Vertex_z.clear();
+		Vertex_ndf.clear();
+		Vertex_chi2.clear();
+		VertexErr_xx.clear();
+		VertexErr_yy.clear();
+		VertexErr_zz.clear();
+		Vertex_idx.clear();
+        for (unsigned int ivtx = 0; ivtx < CTVx->GetSize(); ++ivtx) {
+        	Vertex_x.push_back(CTVx);
+        	Vertex_y.push_back(CTVy);
+        	Vertex_z.push_back(CTVz);
+        	Vertex_ndf.push_back(CTVndf);
+        	Vertex_chi2.push_back(CTVchi2);
+        	VertexErr_xx.push_back(CTVerr_xx);
+        	VertexErr_yy.push_back(CTVerr_yy);
+        	VertexErr_zz.push_back(CTVerr_zz);        
+        	Vertex_idx.push_back(CTVtxPrimIdx);        
+        }
+        
+		// For Scattered electron
+		ScatteredERecId = ScatElecRecoId[0];    
+		ScatteredEGenId = ScatElecGenId[0];    
+
+		EventQ2 = EvtQ2[0];
+		Eventx = Evtx[0];
+		EventQ2Gen = EvtQ2Gen[0];
+		EventxGen = EvtxGen[0];
 
         // Build pseudojets
         std::vector<PseudoJet> particles_reco;
         for (unsigned int i = 0; i < TrkRecoPx->GetSize(); ++i) {
             TVector3 mom((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i]);
-            if (mom.Pt() < minCstPt || mom.Pt() > maxCstPt) continue;
-            if (donhitcut) { if ( (*TrkRecoNhits)[i] < 4 ) continue; }
-            if (removeelectrons){
+            if ( mom.Pt() < minCstPt || mom.Pt() > maxCstPt ) continue;
+            if ( nhitcut != 0 ) { if ( (*TrkRecoNhits)[i] < nhitcut ) continue; }
+            if ( removeelectrons == 1 ){
 				// Find electron
 			    int chargePartIndex = i; 
 			    int elecIndex = -1;
@@ -139,6 +208,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
 		      	}
 				if((*TrkMCGenPDG)[elecIndex] == 11) continue;
             }
+            if ( removeelectrons == 2 && i == ScatteredERecId ) continue; 
             PseudoJet p((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i], (*TrkRecoE)[i]);
             p.set_user_index(i);
             particles_reco.push_back(p);
@@ -147,9 +217,10 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
         std::vector<PseudoJet> particles_gen;
         for (unsigned int i = 0; i < TrkGenPx->GetSize(); ++i) {
             TVector3 mom((*TrkGenPx)[i], (*TrkGenPy)[i], (*TrkGenPz)[i]);
-            if (mom.Pt() < minCstPt || mom.Pt() > maxCstPt) continue;
-            if ((*TrkGenCharge)[i] == 0) continue;
-            if (removeelectrons) { if( (*TrkGenPDG)[i] == 11 ) continue; }
+            if ( mom.Pt() < minCstPt || mom.Pt() > maxCstPt ) continue;
+            if ( (*TrkGenCharge)[i] == 0 ) continue;
+            if ( removeelectrons == 1 && (*TrkGenPDG)[i] == 11 ) continue;
+            if ( removeelectrons == 2 && i == ScatteredEGenId ) continue; 
             PseudoJet p((*TrkGenPx)[i], (*TrkGenPy)[i], (*TrkGenPz)[i], (*TrkGenE)[i]);
             p.set_user_index(i);
             particles_gen.push_back(p);
@@ -193,6 +264,9 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, bool removeele
 			GenJet_constituent_pt.clear(); 
 	        GenJet_constituent_eta.clear();
 	        GenJet_constituent_phi.clear(); 
+
+			EVETMULTRECO = TrkRecoPx->GetSize();
+			EVETMULTGEN = TrkGenPx->GetSize();
 
             // --- Reco clustering ---
             ClusterSequenceArea cs_reco(particles_reco, jet_def, area_def);
