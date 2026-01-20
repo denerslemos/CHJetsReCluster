@@ -167,15 +167,15 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		VertexErr_zz.clear();
 		Vertex_idx.clear();
         for (unsigned int ivtx = 0; ivtx < CTVx->GetSize(); ++ivtx) {
-        	Vertex_x.push_back(CTVx);
-        	Vertex_y.push_back(CTVy);
-        	Vertex_z.push_back(CTVz);
-        	Vertex_ndf.push_back(CTVndf);
-        	Vertex_chi2.push_back(CTVchi2);
-        	VertexErr_xx.push_back(CTVerr_xx);
-        	VertexErr_yy.push_back(CTVerr_yy);
-        	VertexErr_zz.push_back(CTVerr_zz);        
-        	Vertex_idx.push_back(CTVtxPrimIdx);        
+        	Vertex_x.push_back(CTVx[ivtx]);
+        	Vertex_y.push_back(CTVy[ivtx]);
+        	Vertex_z.push_back(CTVz[ivtx]);
+        	Vertex_ndf.push_back(CTVndf[ivtx]);
+        	Vertex_chi2.push_back(CTVchi2[ivtx]);
+        	VertexErr_xx.push_back(CTVerr_xx[ivtx]);
+        	VertexErr_yy.push_back(CTVerr_yy[ivtx]);
+        	VertexErr_zz.push_back(CTVerr_zz[ivtx]);        
+        	Vertex_idx.push_back(CTVtxPrimIdx[ivtx]);        
         }
         
 		// For Scattered electron
