@@ -337,9 +337,9 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		     	 				}
 		  					}
 		  				}
-						if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
-						cpdgid.push_back((*TrkMCGenPDG)[elecIndex]);
 					}
+					if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
+					cpdgid.push_back((*TrkMCGenPDG)[elecIndex]);
                 }
 
                 RecoJet_constituent_pt.push_back(cpt);
