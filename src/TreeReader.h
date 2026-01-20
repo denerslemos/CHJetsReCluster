@@ -30,11 +30,11 @@ std::unique_ptr<TTreeReaderArray<float>> TrkRecoPy;
 std::unique_ptr<TTreeReaderArray<float>> TrkRecoPz;
 std::unique_ptr<TTreeReaderArray<float>> TrkRecoM;
 std::unique_ptr<TTreeReaderArray<int>> TrkRecoPDG;
-std::unique_ptr<TTreeReaderArray<unsigned int>> TrkRecoNhits;
+std::unique_ptr<TTreeReaderArray<int>> TrkRecoNhits;
 
 // Reco to Gen track association
-std::unique_ptr<TTreeReaderArray<unsigned int>> TrkPartAssocRec;
-std::unique_ptr<TTreeReaderArray<unsigned int>> TrkPartAssocSim;
+std::unique_ptr<TTreeReaderArray<int>> TrkPartAssocRec;
+std::unique_ptr<TTreeReaderArray<int>> TrkPartAssocSim;
 std::unique_ptr<TTreeReaderArray<float>> TrkPartAssocWeight;
 
 // Generated particles -> only stable particles from generator level -> Not available ?
@@ -91,10 +91,10 @@ void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
     TrkRecoPz = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticles.momentum.z");
     TrkRecoM = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticles.mass");
     TrkRecoPDG = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "ReconstructedChargedParticles.PDG");
-	TrkPartAssocRec = std::make_unique<TTreeReaderArray<unsigned int>>(*tree_reader, "ReconstructedChargedParticleAssociations.recID"); // Reco <-> MCParticle
-	TrkPartAssocSim = std::make_unique<TTreeReaderArray<unsigned int>>(*tree_reader, "ReconstructedChargedParticleAssociations.simID");
+	TrkPartAssocRec = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "ReconstructedChargedParticleAssociations.recID"); // Reco <-> MCParticle
+	TrkPartAssocSim = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "ReconstructedChargedParticleAssociations.simID");
 	TrkPartAssocWeight = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticleAssociations.weight");
-	TrkRecoNhits = std::make_unique<TTreeReaderArray<unsigned int>>(*tree_reader, "CentralCKFTrajectories.nMeasurements");
+	TrkRecoNhits = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "CentralCKFTrajectories.nMeasurements");
 	
 	// MC Gen -> add GEANT Stuff
 	TrkMCGenStatus = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "MCParticles.generatorStatus");
