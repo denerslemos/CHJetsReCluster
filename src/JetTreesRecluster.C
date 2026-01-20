@@ -106,10 +106,10 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         tree->Branch("NEVENTS", &NEVENTS, "NEVENTS/I");
 		tree->Branch("EVETMULTRECO", &EVETMULTRECO, "EVETMULTRECO/I");
 		tree->Branch("EVETMULTGEN", &EVETMULTGEN, "EVETMULTGEN/I");
-		tree->Branch("EventQ2", &EventQ2, "EventQ2/I");
-		tree->Branch("Eventx", &Eventx, "Eventx/I");
-		tree->Branch("EventQ2Gen", &EventQ2Gen, "EventQ2Gen/I");
-		tree->Branch("EventxGen", &EventxGen, "EventxGen/I");
+		tree->Branch("EventQ2", &EventQ2, "EventQ2/F");
+		tree->Branch("Eventx", &Eventx, "Eventx/F");
+		tree->Branch("EventQ2Gen", &EventQ2Gen, "EventQ2Gen/F");
+		tree->Branch("EventxGen", &EventxGen, "EventxGen/F");
         // Vertex
         tree->Branch("Vertex_x", &Vertex_x);
         tree->Branch("Vertex_y", &Vertex_y);
@@ -224,11 +224,13 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			    int elecIndex = -1;
 			    float elecIndexWeight = -1.0;
 		    	for(unsigned int itrkass = 0; itrkass < TrkPartAssocRec->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
-					if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
-					    if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
-							elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
-							elecIndexWeight = (*TrkPartAssocWeight)[itrkass];
-			      		}
+					if( TrkPartAssocRec->GetSize() > 0 ){
+						if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
+						    if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
+								elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
+								elecIndexWeight = (*TrkPartAssocWeight)[itrkass];
+			      			}
+			  			}
 			  		}
 		      	}
 				if((*TrkMCGenPDG)[elecIndex] == 11) continue;
