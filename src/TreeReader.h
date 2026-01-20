@@ -33,9 +33,6 @@ std::unique_ptr<TTreeReaderArray<int>> TrkRecoPDG;
 std::unique_ptr<TTreeReaderArray<unsigned int>> TrkRecoNhits;
 
 // Reco to Gen track association
-//std::unique_ptr<TTreeReaderArray<unsigned int>> TrkPartAssocRec;
-//std::unique_ptr<TTreeReaderArray<unsigned int>> TrkPartAssocSim;
-//std::unique_ptr<TTreeReaderArray<float>> TrkPartAssocWeight;
 std::unique_ptr<TTreeReaderArray<int>> TrkPartAssocRec;
 std::unique_ptr<TTreeReaderArray<int>> TrkPartAssocSim;
 std::unique_ptr<TTreeReaderArray<float>> TrkPartAssocWeight;
@@ -94,9 +91,6 @@ void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
     TrkRecoPz = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticles.momentum.z");
     TrkRecoM = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticles.mass");
     TrkRecoPDG = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "ReconstructedChargedParticles.PDG");
-	//TrkPartAssocRec = std::make_unique<TTreeReaderArray<unsigned int>>(*tree_reader, "ReconstructedChargedParticleAssociations.recID"); // Reco <-> MCParticle
-	//TrkPartAssocSim = std::make_unique<TTreeReaderArray<unsigned int>>(*tree_reader, "ReconstructedChargedParticleAssociations.simID");
-	//TrkPartAssocWeight = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticleAssociations.weight");
 	TrkPartAssocRec = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "_ReconstructedChargedParticleAssociations_rec.index");
 	TrkPartAssocSim = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "_ReconstructedChargedParticleAssociations_sim.index");
 	TrkPartAssocWeight = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticleAssociations.weight");

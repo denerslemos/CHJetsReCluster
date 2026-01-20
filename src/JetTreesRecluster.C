@@ -6,10 +6,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
-    // Define R values
-    //std::vector<float> R_values;
-    //for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
-
     double minCstPt            = 0.2 ;				 // minimum pT of objects
     double maxCstPt            = 100.;  			 // maximum pT of objects
     double minJetPt            = 1.0 ;  			 // minimum jet pT
