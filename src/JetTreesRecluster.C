@@ -236,7 +236,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 				if((*TrkMCGenPDG)[elecIndex] == 11) continue;
             }
             if ( removeelectrons == 2 && i == ScatteredERecId ) continue; 
-            if ( removeelectrons == 3 && i == ScatteredERecId ) continue; 
             PseudoJet p((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i], (*TrkRecoE)[i]);
             p.set_user_index(i);
             particles_reco.push_back(p);
@@ -245,12 +244,10 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         std::vector<PseudoJet> particles_gen;
         for (unsigned int i = 0; i < TrkGenPx->GetSize(); ++i) {
             TVector3 mom((*TrkGenPx)[i], (*TrkGenPy)[i], (*TrkGenPz)[i]);
-            cout << "ScatteredEGenId: " << ScatteredEGenId << endl;
             if ( mom.Pt() < minCstPt || mom.Pt() > maxCstPt ) continue;
             if ( (*TrkGenCharge)[i] == 0 ) continue;
             if ( removeelectrons == 1 && (*TrkGenPDG)[i] == 11 ) continue;
             if ( removeelectrons == 2 && i == ScatteredEGenId ) continue; 
-            if ( removeelectrons == 3 && (*TrkGenPDG)[i] == 11 ) continue;
             PseudoJet p((*TrkGenPx)[i], (*TrkGenPy)[i], (*TrkGenPz)[i], (*TrkGenE)[i]);
             p.set_user_index(i);
             particles_gen.push_back(p);
