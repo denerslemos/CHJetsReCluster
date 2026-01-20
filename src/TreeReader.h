@@ -15,7 +15,6 @@ std::unique_ptr<TTreeReaderArray<float>> CTVchi2;
 std::unique_ptr<TTreeReaderArray<float>> CTVerr_xx;
 std::unique_ptr<TTreeReaderArray<float>> CTVerr_yy;
 std::unique_ptr<TTreeReaderArray<float>> CTVerr_zz;
-std::unique_ptr<TTreeReaderArray<int>> CTVtxPrimIdx;
 
 // Scattered electrons
 // reconstructed
@@ -82,7 +81,6 @@ void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
 	CTVerr_xx = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "CentralTrackVertices.positionError.xx");
 	CTVerr_yy = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "CentralTrackVertices.positionError.yy");
 	CTVerr_zz = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "CentralTrackVertices.positionError.zz");
-	CTVtxPrimIdx = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "PrimaryVertices_objIdx.index");
 	/*
 	// Scattered electron
     ScatElecRecoId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "_InclusiveKinematicsElectron_scat.index");

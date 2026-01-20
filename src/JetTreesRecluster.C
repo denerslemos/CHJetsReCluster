@@ -160,7 +160,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	    if(globalEvent%100 == 0) cout << "Events Processed: " << globalEvent << endl;
 	    globalEvent++;
 	    NEVENTS = globalEvent;
-	    
 	    // For Vertex
 	    Vertex_x.clear();
 		Vertex_y.clear();
@@ -170,7 +169,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		VertexErr_xx.clear();
 		VertexErr_yy.clear();
 		VertexErr_zz.clear();
-		Vertex_idx.clear();
         for (unsigned int ivtx = 0; ivtx < CTVx->GetSize(); ++ivtx) {
         	Vertex_x.push_back((*CTVx)[ivtx]);
         	Vertex_y.push_back((*CTVy)[ivtx]);
@@ -180,7 +178,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         	VertexErr_xx.push_back((*CTVerr_xx)[ivtx]);
         	VertexErr_yy.push_back((*CTVerr_yy)[ivtx]);
         	VertexErr_zz.push_back((*CTVerr_zz)[ivtx]);        
-        	Vertex_idx.push_back((*CTVtxPrimIdx)[ivtx]);        
         }
         
         /*
