@@ -194,6 +194,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
             TVector3 mom((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i]);
             if ( mom.Pt() < minCstPt || mom.Pt() > maxCstPt ) continue;
             if ( nhitcut != 0 ) { if ( (*TrkRecoNhits)[i] < nhitcut ) continue; }
+            /*
             if ( removeelectrons == 1 ){
 				// Find electron
 			    int chargePartIndex = i; 
@@ -209,6 +210,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
 		      	}
 				if((*TrkMCGenPDG)[elecIndex] == 11) continue;
             }
+            */
             if ( removeelectrons == 2 && i == ScatteredERecId ) continue; 
             PseudoJet p((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i], (*TrkRecoE)[i]);
             p.set_user_index(i);
