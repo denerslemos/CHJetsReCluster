@@ -2,13 +2,13 @@
 
 using namespace fastjet;
 
-void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<float> R_values, int removeelectrons, int nhitcut){
+void JetTreesRecluster(TString InputFileList, TString OutputFile,/* std::vector<float> R_values,*/ int removeelectrons, int nhitcut){
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
     // Define R values
-    //std::vector<float> R_values;
-    //for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
+    std::vector<float> R_values;
+    for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
 
     double minCstPt            = 0.2 ;				 // minimum pT of objects
     double maxCstPt            = 100.;  			 // maximum pT of objects
@@ -94,6 +94,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	std::vector<std::vector<float>> GenJet_constituent_eta;
 	std::vector<std::vector<float>> GenJet_constituent_phi;
 	std::vector<std::vector<int>> GenJet_constituent_pdgid;
+	
+	
     // === Create trees ===
     std::vector<TTree*> trees;
     for (auto R : R_values) {
@@ -180,7 +182,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         	VertexErr_zz.push_back((*CTVerr_zz)[ivtx]);        
         	Vertex_idx.push_back((*CTVtxPrimIdx)[ivtx]);        
         }
-        */
+        
         
 		// For Scattered electron
 
@@ -191,13 +193,14 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		Eventx = (*Evtx)[0];
 		EventQ2Gen = (*EvtQ2Gen)[0];
 		EventxGen = (*EvtxGen)[0];
+		*/
 
         // Build pseudojets
         std::vector<PseudoJet> particles_reco;
         for (unsigned int i = 0; i < TrkRecoPx->GetSize(); ++i) {
             TVector3 mom((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i]);
             if ( mom.Pt() < minCstPt || mom.Pt() > maxCstPt ) continue;
-            if ( nhitcut != 0 ) { if ( (*TrkRecoNhits)[i] < nhitcut ) continue; }
+            if ( nhitcut != 0 && (*TrkRecoNhits)[i] < nhitcut ) continue;
             /*
             if ( removeelectrons == 1 ){
 				// Find electron
