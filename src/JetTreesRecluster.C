@@ -169,28 +169,37 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		VertexErr_xx.clear();
 		VertexErr_yy.clear();
 		VertexErr_zz.clear();
-        for (unsigned int ivtx = 0; ivtx < CTVx->GetSize(); ++ivtx) {
-        	Vertex_x.push_back((*CTVx)[ivtx]);
-        	Vertex_y.push_back((*CTVy)[ivtx]);
-        	Vertex_z.push_back((*CTVz)[ivtx]);
-        	Vertex_ndf.push_back((*CTVndf)[ivtx]);
-        	Vertex_chi2.push_back((*CTVchi2)[ivtx]);
-        	VertexErr_xx.push_back((*CTVerr_xx)[ivtx]);
-        	VertexErr_yy.push_back((*CTVerr_yy)[ivtx]);
-        	VertexErr_zz.push_back((*CTVerr_zz)[ivtx]);        
+		if( CTVx->GetSize() == 0 ){
+        	Vertex_x.push_back(-99.9);
+        	Vertex_y.push_back(-99.9);
+        	Vertex_z.push_back(-99.9);
+        	Vertex_ndf.push_back(-99.9);
+        	Vertex_chi2.push_back(-99.9);
+        	VertexErr_xx.push_back(-99.9);
+        	VertexErr_yy.push_back(-99.9);
+        	VertexErr_zz.push_back(-99.9);        
+
+		}else{
+	        for (unsigned int ivtx = 0; ivtx < CTVx->GetSize(); ++ivtx) {
+    	    	Vertex_x.push_back((*CTVx)[ivtx]);
+  	      		Vertex_y.push_back((*CTVy)[ivtx]);
+        		Vertex_z.push_back((*CTVz)[ivtx]);
+        		Vertex_ndf.push_back((*CTVndf)[ivtx]);
+        		Vertex_chi2.push_back((*CTVchi2)[ivtx]);
+        		VertexErr_xx.push_back((*CTVerr_xx)[ivtx]);
+        		VertexErr_yy.push_back((*CTVerr_yy)[ivtx]);
+        		VertexErr_zz.push_back((*CTVerr_zz)[ivtx]);        
+        	}
         }
         
-        /*
 		// For Scattered electron
-
 		ScatteredERecId = (*ScatElecRecoId)[0];    
 		ScatteredEGenId = (*ScatElecGenId)[0];    
-
+		// other quantities
 		EventQ2 = (*EvtQ2)[0];
 		Eventx = (*Evtx)[0];
 		EventQ2Gen = (*EvtQ2Gen)[0];
 		EventxGen = (*EvtxGen)[0];
-		*/
 
         // Build pseudojets
         std::vector<PseudoJet> particles_reco;
