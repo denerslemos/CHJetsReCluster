@@ -303,20 +303,20 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
                     chits.push_back((*TrkRecoNhits)[idx]);
                     if (v3.Pt() > maxPtReco) maxPtReco = v3.Pt();
 					// Find electron
-			    	int chargePartIndex = idx; 
-			    	int elecIndex = -1;
-			    	float elecIndexWeight = -1.0;
-			    	/*
-		    		for(unsigned int itrkass = 0; itrkass < TrkPartAssocRec->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
-						if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
-						    if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
-								elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
-								elecIndexWeight = (*TrkPartAssocWeight)[itrkass];
-			     	 		}
-			  			}
-		      		}
-					if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
-					*/
+         			if ( removeelectrons == 1 ){
+			    		int chargePartIndex = idx; 
+			    		int elecIndex = -1;
+			    		float elecIndexWeight = -1.0;
+		    			for(unsigned int itrkass = 0; itrkass < TrkPartAssocRec->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
+							if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
+							    if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
+									elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
+									elecIndexWeight = (*TrkPartAssocWeight)[itrkass];
+			     	 			}
+			  				}
+		      			}
+						if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
+					}
                 }
 
                 RecoJet_constituent_pt.push_back(cpt);
