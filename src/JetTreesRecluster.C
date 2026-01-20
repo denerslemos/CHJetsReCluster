@@ -49,10 +49,10 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	int EVETMULTGEN = 0;
 	int ScatteredERecId = 0;
 	int ScatteredEGenId = 0;
-	float EventQ2 = 0;
-	float Eventx = 0;
-	float EventQ2Gen = 0;
-	float EventxGen = 0;
+	float EventQ2 = -999;
+	float Eventx = -999;
+	float EventQ2Gen = -999;
+	float EventxGen = -999;
 
 	// Vertex
 	std::vector<float> Vertex_x;
@@ -63,7 +63,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	std::vector<float> VertexErr_xx;
 	std::vector<float> VertexErr_yy;
 	std::vector<float> VertexErr_zz;
-	std::vector<int> Vertex_idx;
 
 	// Reco Jets (Variable-length vectors for multiple jets per event)
 	std::vector<float> RecoJet_pt;
@@ -119,7 +118,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         tree->Branch("VertexErr_xx", &VertexErr_xx);
         tree->Branch("VertexErr_yy", &VertexErr_yy);
         tree->Branch("VertexErr_zz", &VertexErr_zz);
-        tree->Branch("Vertex_idx", &Vertex_idx);
 		// Scattered electron
         tree->Branch("ScatteredERecId", &ScatteredERecId);
         tree->Branch("ScatteredEGenId", &ScatteredEGenId);
@@ -181,34 +179,36 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         }
         
 		// For Scattered electron
+		
 		if(ScatElecRecoId->GetSize() > 0){
-			int iscat = (*ScatElecRecoId)[0];
-			ScatteredERecId = iscat;    
+			int iscatR = (*ScatElecRecoId)[0];
+			ScatteredERecId = iscatR;    
 		}else{ScatteredERecId = -999;}
+		
 		if(ScatElecGenId->GetSize() > 0){
-			int iscat = (*ScatElecGenId)[0];
-			ScatteredEGenId = iscat;    
+			int iscatG = (*ScatElecGenId)[0];
+			ScatteredEGenId = iscatG;    
 		}else{ScatteredEGenId = -999;}
 		
 		// other quantities
 		if(EvtQ2->GetSize() > 0){
-			int q2value = (*EvtQ2)[0];
-			EventQ2 = q2value;    
+			int q2valueR = (*EvtQ2)[0];
+			EventQ2 = q2valueR;    
 		}else{EventQ2 = -999;}
 		
 		if(Evtx->GetSize() > 0){
-			int xvalue = (*Evtx)[0];
-			Eventx = xvalue;    
+			int xvalueR = (*Evtx)[0];
+			Eventx = xvalueR;    
 		}else{Eventx = -999;}
 		
 		if(EvtQ2Gen->GetSize() > 0){
-			int q2value = (*EvtQ2Gen)[0];
-			EventQ2Gen = q2value;    
+			int q2valueG = (*EvtQ2Gen)[0];
+			EventQ2Gen = q2valueG;    
 		}else{EventQ2Gen = -999;}
 		
 		if(EvtxGen->GetSize() > 0){
-			int xvalue = (*EvtxGen)[0];
-			EventxGen = xvalue;    
+			int xvalueG = (*EvtxGen)[0];
+			EventxGen = xvalueG;    
 		}else{EventxGen = -999;}
 
 
