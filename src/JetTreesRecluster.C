@@ -179,8 +179,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         }
         
 		// For Scattered electron
-		ScatteredERecId = ScatElecRecoId[0];    
-		ScatteredEGenId = ScatElecGenId[0];    
+		ScatteredERecId = (*ScatElecRecoId)[0];    
+		ScatteredEGenId = (*ScatElecGenId)[0];    
 
 		EventQ2 = (*EvtQ2)[0];
 		Eventx = (*Evtx)[0];
