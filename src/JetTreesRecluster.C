@@ -160,7 +160,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	    if(globalEvent%100 == 0) cout << "Events Processed: " << globalEvent << endl;
 	    globalEvent++;
 	    NEVENTS = globalEvent;
-	    /*
+	    
 	    // For Vertex
 	    Vertex_x.clear();
 		Vertex_y.clear();
@@ -183,7 +183,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         	Vertex_idx.push_back((*CTVtxPrimIdx)[ivtx]);        
         }
         
-        
+        /*
 		// For Scattered electron
 
 		ScatteredERecId = (*ScatElecRecoId)[0];    
