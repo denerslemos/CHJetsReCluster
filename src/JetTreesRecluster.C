@@ -223,8 +223,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			    int chargePartIndex = i; 
 			    int elecIndex = -1;
 			    float elecIndexWeight = -1.0;
-		    	for(unsigned int itrkass = 0; itrkass < TrkPartAssocRec->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
-					if( TrkPartAssocRec->GetSize() > 0 ){
+		    	for(unsigned int itrkass = 0; itrkass < TrkPartAssocWeight->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
+					if( TrkPartAssocWeight->GetSize() > 0 ){
 						if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
 						    if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
 								elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
@@ -326,8 +326,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			    		int chargePartIndex = idx; 
 			    		int elecIndex = -1;
 			    		float elecIndexWeight = -1.0;
-		    			for(unsigned int itrkass = 0; itrkass < TrkPartAssocRec->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
-							if( TrkPartAssocRec->GetSize() > 0 ){
+		    			for(unsigned int itrkass = 0; itrkass < TrkPartAssocWeight->GetSize(); itrkass++){ // Loop Over All ReconstructedChargedParticleAssociations
+							if( TrkPartAssocWeight->GetSize() > 0 ){
 								if((*TrkPartAssocRec)[itrkass] == chargePartIndex){ // Select Entry Matching the ReconstructedChargedParticle Index
 							    	if((*TrkPartAssocWeight)[itrkass] > elecIndexWeight){ // Find Particle with Greatest Weight = Contributed Most Hits to Track
 										elecIndex = (*TrkPartAssocSim)[itrkass]; // Get Index of MCParticle Associated with ReconstructedChargedParticle
