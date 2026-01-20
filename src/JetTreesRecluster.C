@@ -157,7 +157,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile,/* std::vector<
 	int globalEvent = 0;
 	while(tree_reader->Next()) {	
 	
-	    if(globalEvent%50000 == 0) cout << "Events Processed: " << globalEvent << endl;
+	    if(globalEvent%100 == 0) cout << "Events Processed: " << globalEvent << endl;
 	    globalEvent++;
 	    NEVENTS = globalEvent;
 	    /*
@@ -277,8 +277,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile,/* std::vector<
 	        GenJet_constituent_phi.clear(); 
 	        GenJet_constituent_pdgid.clear();
 
-			EVETMULTRECO = TrkRecoPx->GetSize();
-			EVETMULTGEN = TrkGenPx->GetSize();
+			EVETMULTRECO = (int)TrkRecoPx->GetSize();
+			EVETMULTGEN = (int)TrkGenPx->GetSize();
 
             // --- Reco clustering ---
             ClusterSequenceArea cs_reco(particles_reco, jet_def, area_def);
