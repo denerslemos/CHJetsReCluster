@@ -2,13 +2,13 @@
 
 using namespace fastjet;
 
-void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<float> R_values*/, int removeelectrons, int nhitcut){
+void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<float> R_values, int removeelectrons, int nhitcut){
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
     // Define R values
-    std::vector<float> R_values;
-    for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
+    //std::vector<float> R_values;
+    //for (int i = 1; i <= 10; i++) R_values.push_back(i * 0.1);
 
     double minCstPt            = 0.2 ;				 // minimum pT of objects
     double maxCstPt            = 100.;  			 // maximum pT of objects
@@ -78,6 +78,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
 	std::vector<std::vector<float>> RecoJet_constituent_eta;
 	std::vector<std::vector<float>> RecoJet_constituent_phi;
 	std::vector<std::vector<int>> RecoJet_constituent_nhits;
+	std::vector<std::vector<int>> RecoJet_constituent_pdgid;
 
 	// Gen Jets (Variable-length vectors for multiple jets per event)
 	std::vector<float> GenJet_pt;
@@ -92,7 +93,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
 	std::vector<std::vector<float>> GenJet_constituent_pt;
 	std::vector<std::vector<float>> GenJet_constituent_eta;
 	std::vector<std::vector<float>> GenJet_constituent_phi;
-
+	std::vector<std::vector<int>> GenJet_constituent_pdgid;
     // === Create trees ===
     std::vector<TTree*> trees;
     for (auto R : R_values) {
@@ -131,6 +132,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
         tree->Branch("RecoJet_constituent_pt", &RecoJet_constituent_pt);
         tree->Branch("RecoJet_constituent_eta", &RecoJet_constituent_eta);
         tree->Branch("RecoJet_constituent_phi", &RecoJet_constituent_phi);
+        tree->Branch("RecoJet_constituent_pdgid", &RecoJet_constituent_pdgid);
 		tree->Branch("RecoJet_constituent_nhits", &RecoJet_constituent_nhits);
         // Gen
         tree->Branch("GenJet_pt", &GenJet_pt);
@@ -144,6 +146,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
         tree->Branch("GenJet_constituent_pt", &GenJet_constituent_pt);
         tree->Branch("GenJet_constituent_eta", &GenJet_constituent_eta);
         tree->Branch("GenJet_constituent_phi", &GenJet_constituent_phi);
+        tree->Branch("GenJet_constituent_pdgid", &GenJet_constituent_pdgid);
 
         trees.push_back(tree);
     }
@@ -155,7 +158,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
 	    if(globalEvent%50000 == 0) cout << "Events Processed: " << globalEvent << endl;
 	    globalEvent++;
 	    NEVENTS = globalEvent;
-/*	    
+	    /*
 	    // For Vertex
 	    Vertex_x.clear();
 		Vertex_y.clear();
@@ -177,7 +180,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
         	VertexErr_zz.push_back((*CTVerr_zz)[ivtx]);        
         	Vertex_idx.push_back((*CTVtxPrimIdx)[ivtx]);        
         }
- */     
+        */
+        
 		// For Scattered electron
 
 		ScatteredERecId = (*ScatElecRecoId)[0];    
@@ -255,7 +259,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
 	        RecoJet_constituent_eta.clear();
 	        RecoJet_constituent_phi.clear(); 
 	        RecoJet_constituent_nhits.clear();
-		
+	        RecoJet_constituent_pdgid
+	        
 			GenJet_pt.clear();
 			GenJet_eta.clear();
 			GenJet_phi.clear();
@@ -267,6 +272,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
 			GenJet_constituent_pt.clear(); 
 	        GenJet_constituent_eta.clear();
 	        GenJet_constituent_phi.clear(); 
+	        GenJet_constituent_pdgid.clear();
 
 			EVETMULTRECO = TrkRecoPx->GetSize();
 			EVETMULTGEN = TrkGenPx->GetSize();
@@ -284,8 +290,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
                 bool hasElectron = false;
                 float maxPtReco = -1.0;
                 std::vector<float> cpt, ceta, cphi;
-                std::vector<int> chits;
-                cpt.clear(); ceta.clear(); cphi.clear(); chits.clear();
+                std::vector<int> chits, cpdgid;
+                cpt.clear(); ceta.clear(); cphi.clear(); chits.clear(); cpdgid.clear();
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
@@ -334,7 +340,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
                 bool hasGenNeutral = false;
                 float maxPtGen = -1.0;
                 std::vector<float> gpt, geta, gphi;
-				gpt.clear(); geta.clear(); gphi.clear(); 
+                std::vector<int> gpdgid;
+				gpt.clear(); geta.clear(); gphi.clear(); gpdgid.clear();
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
@@ -342,17 +349,18 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<
                     gpt.push_back(gv.Pt());
                     geta.push_back(gv.Eta());
                     gphi.push_back(gv.Phi());
+                    gpdgid.push_back((*TrkGenPDG)[idx]);
                     if (gv.Pt() > maxPtGen) maxPtGen = gv.Pt();
                     if ((*TrkGenPDG)[idx] == 11) hasGenElectron = true;
                     if ((*TrkGenCharge)[idx] == 0) hasGenNeutral = true;
                 }
-
                 GenJet_constituent_pt.push_back(gpt);
                 GenJet_constituent_eta.push_back(geta);
                 GenJet_constituent_phi.push_back(gphi);
                 GenJet_hasElectron.push_back(hasGenElectron);
                 GenJet_hasNeutral.push_back(hasGenNeutral);
                 GenJet_maxPtPart_pt.push_back(maxPtGen);
+                GenJet_constituent_pdgid.push_back(gpdgid);
             }
 			 
 			tree->Fill();      
