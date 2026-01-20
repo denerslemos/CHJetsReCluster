@@ -81,7 +81,8 @@ void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
 	CTVerr_zz = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "CentralTrackVertices.positionError.zz");
 	// Scattered electron
     ScatElecRecoId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "_InclusiveKinematicsElectron_scat.index");
-    ScatElecGenId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "MCScatteredElectrons_objIdx.index");
+//    ScatElecGenId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "MCScatteredElectrons_objIdx.index");
+    ScatElecGenId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "_InclusiveKinematicsTruth_scat.index");
 
 	// Reconstructed charged particles (Tracks)
     TrkRecoE = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticles.energy");
