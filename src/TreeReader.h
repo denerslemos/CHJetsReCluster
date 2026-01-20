@@ -66,6 +66,7 @@ tree_reader: the object for TTreeReader
 void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
 
     tree_reader = std::make_unique<TTreeReader>(chain);
+    /*
 	// Event quantities
     EvtQ2 = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsElectron.Q2");
     Evtx = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsElectron.x");
@@ -86,6 +87,7 @@ void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
 	// Scattered electron
     ScatElecRecoId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "_InclusiveKinematicsElectron_scat.index");
     ScatElecGenId = std::make_unique<TTreeReaderArray<int>>(*tree_reader, "MCScatteredElectrons_objIdx.index");
+    */
 
 	// Reconstructed charged particles (Tracks)
     TrkRecoE = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "ReconstructedChargedParticles.energy");
