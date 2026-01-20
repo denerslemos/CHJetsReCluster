@@ -259,7 +259,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	        RecoJet_constituent_eta.clear();
 	        RecoJet_constituent_phi.clear(); 
 	        RecoJet_constituent_nhits.clear();
-	        RecoJet_constituent_pdgid
+	        RecoJet_constituent_pdgid.clear();
 	        
 			GenJet_pt.clear();
 			GenJet_eta.clear();
