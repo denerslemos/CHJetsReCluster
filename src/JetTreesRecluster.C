@@ -170,14 +170,14 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		VertexErr_yy.clear();
 		VertexErr_zz.clear();
 		if( CTVx->GetSize() == 0 ){
-        	Vertex_x.push_back(-99.9);
-        	Vertex_y.push_back(-99.9);
-        	Vertex_z.push_back(-99.9);
-        	Vertex_ndf.push_back(-99.9);
-        	Vertex_chi2.push_back(-99.9);
-        	VertexErr_xx.push_back(-99.9);
-        	VertexErr_yy.push_back(-99.9);
-        	VertexErr_zz.push_back(-99.9);        
+        	Vertex_x.push_back(-999);
+        	Vertex_y.push_back(-999);
+        	Vertex_z.push_back(-999);
+        	Vertex_ndf.push_back(-999);
+        	Vertex_chi2.push_back(-999);
+        	VertexErr_xx.push_back(-999);
+        	VertexErr_yy.push_back(-999);
+        	VertexErr_zz.push_back(-999);        
 
 		}else{
 	        for (unsigned int ivtx = 0; ivtx < CTVx->GetSize(); ++ivtx) {
