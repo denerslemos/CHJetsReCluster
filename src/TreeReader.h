@@ -69,8 +69,8 @@ void TreeReader(TChain* chain, std::unique_ptr<TTreeReader>& tree_reader) {
 	// Event quantities
     EvtQ2 = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsElectron.Q2");
     Evtx = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsElectron.x");
-    EvtQ2Gen = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsGen.Q2");
-    EvtxGen = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsGen.x");
+    EvtQ2Gen = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsTruth.Q2");
+    EvtxGen = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "InclusiveKinematicsTruth.x");
 
 	// Vertex
 	CTVx = std::make_unique<TTreeReaderArray<float>>(*tree_reader, "CentralTrackVertices.position.x");
