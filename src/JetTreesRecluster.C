@@ -182,10 +182,11 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		}else{ScatteredERecId = -999;}
 		
 		if(ScatElecGenId->GetSize() > 0){
-			ScatteredEGenId = -999; // Default if not found		
+			ScatteredEGenId = -999; // Default if not found	
+			int iscatG;	
 			for(int iele = 0; iele < ScatElecGenId->GetSize(); ++iele){
 				if( (*TrkGenPDG)[(*ScatElecGenId)[iele]] == 11 ){
-					int iscatG = (*ScatElecGenId)[iele];
+					iscatG = (*ScatElecGenId)[iele];
 					break;
 				}
 			}
@@ -339,7 +340,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			  				}
 		      			}
 						if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
-						RecoJet_constituent_pdgid.push_back((*TrkMCGenPDG)[elecIndex]);
+						cpdgid.push_back((*TrkMCGenPDG)[elecIndex]);
 					}
                 }
 
@@ -347,6 +348,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
                 RecoJet_constituent_eta.push_back(ceta);
                 RecoJet_constituent_phi.push_back(cphi);
                 RecoJet_constituent_nhits.push_back(chits);
+                RecoJet_constituent_pdgid.push_back(chits);
                 RecoJet_hasElectron.push_back(hasElectron);
                 RecoJet_maxPtPart_pt.push_back(maxPtReco);
             }
