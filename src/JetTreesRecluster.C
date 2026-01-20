@@ -193,13 +193,13 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         }
         
 		// For Scattered electron
-		ScatteredERecId = (*ScatElecRecoId)[0];    
-		ScatteredEGenId = (*ScatElecGenId)[0];    
+		ScatteredERecId = (int)(*ScatElecRecoId)[0];    
+		ScatteredEGenId = (int)(*ScatElecGenId)[0];    
 		// other quantities
-		EventQ2 = (*EvtQ2)[0];
-		Eventx = (*Evtx)[0];
-		EventQ2Gen = (*EvtQ2Gen)[0];
-		EventxGen = (*EvtxGen)[0];
+		//EventQ2 = (*EvtQ2)[0];
+		//Eventx = (*Evtx)[0];
+		//EventQ2Gen = (*EvtQ2Gen)[0];
+		//EventxGen = (*EvtxGen)[0];
 
         // Build pseudojets
         std::vector<PseudoJet> particles_reco;
