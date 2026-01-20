@@ -182,9 +182,15 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		}else{ScatteredERecId = -999;}
 		
 		if(ScatElecGenId->GetSize() > 0){
-			int iscatG = (*ScatElecGenId)[0];
+			ScatteredEGenId = -999; // Default if not found		
+			for(int iele = 0; iele < ScatElecGenId->GetSize(); ++iele){
+				if( (*TrkGenPDG)[(*ScatElecGenId)[iele]] == 11 ){
+					int iscatG = (*ScatElecGenId)[iele];
+					break;
+				}
+			}
 			ScatteredEGenId = iscatG;    
-		}else{ScatteredEGenId = -999;}
+		}
 		
 		// other quantities
 		if(EvtQ2->GetSize() > 0){
@@ -333,6 +339,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			  				}
 		      			}
 						if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
+						RecoJet_constituent_pdgid.push_back((*TrkMCGenPDG)[elecIndex]);
 					}
                 }
 
