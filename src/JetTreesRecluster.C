@@ -192,22 +192,22 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		
 		// other quantities
 		if(EvtQ2->GetSize() > 0){
-			int q2valueR = (*EvtQ2)[0];
+			float q2valueR = (*EvtQ2)[0];
 			EventQ2 = q2valueR;    
 		}else{EventQ2 = -999;}
 		
 		if(Evtx->GetSize() > 0){
-			int xvalueR = (*Evtx)[0];
+			float xvalueR = (*Evtx)[0];
 			Eventx = xvalueR;    
 		}else{Eventx = -999;}
 		
 		if(EvtQ2Gen->GetSize() > 0){
-			int q2valueG = (*EvtQ2Gen)[0];
+			float q2valueG = (*EvtQ2Gen)[0];
 			EventQ2Gen = q2valueG;    
 		}else{EventQ2Gen = -999;}
 		
 		if(EvtxGen->GetSize() > 0){
-			int xvalueG = (*EvtxGen)[0];
+			float xvalueG = (*EvtxGen)[0];
 			EventxGen = xvalueG;    
 		}else{EventxGen = -999;}
 
