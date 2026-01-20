@@ -184,13 +184,33 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		if(ScatElecRecoId->GetSize() > 0){
 			int iscat = (*ScatElecRecoId)[0];
 			ScatteredERecId = iscat;    
-		}
-		//ScatteredEGenId = (int)(*ScatElecGenId)[0];    
+		}else{ScatteredERecId = -999;}
+		if(ScatElecGenId->GetSize() > 0){
+			int iscat = (*ScatElecGenId)[0];
+			ScatteredEGenId = iscat;    
+		}else{ScatteredEGenId = -999;}
+		
 		// other quantities
-		//EventQ2 = (*EvtQ2)[0];
-		//Eventx = (*Evtx)[0];
-		//EventQ2Gen = (*EvtQ2Gen)[0];
-		//EventxGen = (*EvtxGen)[0];
+		if(EvtQ2->GetSize() > 0){
+			int q2value = (*EvtQ2)[0];
+			EventQ2 = q2value;    
+		}else{EventQ2 = -999;}
+		
+		if(Evtx->GetSize() > 0){
+			int xvalue = (*Evtx)[0];
+			Eventx = xvalue;    
+		}else{Eventx = -999;}
+		
+		if(EvtQ2Gen->GetSize() > 0){
+			int q2value = (*EvtQ2Gen)[0];
+			EventQ2Gen = q2value;    
+		}else{EventQ2Gen = -999;}
+		
+		if(EvtxGen->GetSize() > 0){
+			int xvalue = (*EvtxGen)[0];
+			EventxGen = xvalue;    
+		}else{EventxGen = -999;}
+
 
         // Build pseudojets
         std::vector<PseudoJet> particles_reco;
