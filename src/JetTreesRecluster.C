@@ -323,6 +323,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
                     ceta.push_back(v3.Eta());
                     cphi.push_back(v3.Phi());
                     chits.push_back((*TrkRecoNhits)[idx]);
+					cpdgid.push_back((*TrkRecoPDG)[idx]);
                     if (v3.Pt() > maxPtReco) maxPtReco = v3.Pt();
 					// Find electron
 		    		int chargePartIndex = idx; 
@@ -339,7 +340,6 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		  				}
 					}
 					if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
-					cpdgid.push_back((*TrkMCGenPDG)[elecIndex]);
                 }
 
                 RecoJet_constituent_pt.push_back(cpt);
