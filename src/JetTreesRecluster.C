@@ -2,7 +2,7 @@
 
 using namespace fastjet;
 
-void JetTreesRecluster(TString InputFileList/*, TString OutputFile, std::vector<float> R_values*/, int removeelectrons, int nhitcut){
+void JetTreesRecluster(TString InputFileList, TString OutputFile/*, std::vector<float> R_values*/, int removeelectrons, int nhitcut){
 
 	typedef ROOT::Math::PxPyPzEVector LorentzVector;
 	
