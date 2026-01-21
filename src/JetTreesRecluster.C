@@ -74,6 +74,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	std::vector<std::vector<float>> RecoJet_constituent_phi;
 	std::vector<std::vector<int>> RecoJet_constituent_nhits;
 	std::vector<std::vector<int>> RecoJet_constituent_pdgid;
+	std::vector<std::vector<int>> RecoJet_constituent_pdgidTruth;
 
 	// Gen Jets (Variable-length vectors for multiple jets per event)
 	std::vector<float> GenJet_pt;
@@ -129,6 +130,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         tree->Branch("RecoJet_constituent_eta", &RecoJet_constituent_eta);
         tree->Branch("RecoJet_constituent_phi", &RecoJet_constituent_phi);
         tree->Branch("RecoJet_constituent_pdgid", &RecoJet_constituent_pdgid);
+        tree->Branch("RecoJet_constituent_pdgidTruth", &RecoJet_constituent_pdgidTruth);
 		tree->Branch("RecoJet_constituent_nhits", &RecoJet_constituent_nhits);
         // Gen
         tree->Branch("GenJet_pt", &GenJet_pt);
@@ -187,7 +189,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			for(int iele = 0; iele < ScatElecGenId->GetSize(); ++iele){
 				if( (*TrkGenPDG)[(*ScatElecGenId)[iele]] == 11 ){
 					iscatG = (*ScatElecGenId)[iele];
-					break;
+					//break;
 				}
 			}
 			ScatteredEGenId = iscatG;    
@@ -283,6 +285,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 	        RecoJet_constituent_phi.clear(); 
 	        RecoJet_constituent_nhits.clear();
 	        RecoJet_constituent_pdgid.clear();
+	        RecoJet_constituent_pdgidTruth.clear();
 	        
 			GenJet_pt.clear();
 			GenJet_eta.clear();
@@ -313,8 +316,8 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
                 bool hasElectron = false;
                 float maxPtReco = -1.0;
                 std::vector<float> cpt, ceta, cphi;
-                std::vector<int> chits, cpdgid;
-                cpt.clear(); ceta.clear(); cphi.clear(); chits.clear(); cpdgid.clear();
+                std::vector<int> chits, cpdgid, cpdgidtruth;
+                cpt.clear(); ceta.clear(); cphi.clear(); chits.clear(); cpdgid.clear(); cpdgidtruth.clear();
 
                 for (auto &c : jet.constituents()) {
                     int idx = c.user_index();
@@ -323,7 +326,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
                     ceta.push_back(v3.Eta());
                     cphi.push_back(v3.Phi());
                     chits.push_back((*TrkRecoNhits)[idx]);
-					cpdgid.push_back((*TrkRecoPDG)[idx]);
+
                     if (v3.Pt() > maxPtReco) maxPtReco = v3.Pt();
 					// Find electron
 		    		int chargePartIndex = idx; 
@@ -340,13 +343,16 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 		  				}
 					}
 					if((*TrkMCGenPDG)[elecIndex] == 11) hasElectron = true;
+					cpdgid.push_back((*TrkRecoPDG)[idx]);
+					cpdgidtruth.push_back((*TrkMCGenPDG)[elecIndex]);
                 }
 
                 RecoJet_constituent_pt.push_back(cpt);
                 RecoJet_constituent_eta.push_back(ceta);
                 RecoJet_constituent_phi.push_back(cphi);
                 RecoJet_constituent_nhits.push_back(chits);
-                RecoJet_constituent_pdgid.push_back(chits);
+                RecoJet_constituent_pdgid.push_back(cpdgid);
+                RecoJet_constituent_pdgidTruth.push_back(cpdgidtruth);
                 RecoJet_hasElectron.push_back(hasElectron);
                 RecoJet_maxPtPart_pt.push_back(maxPtReco);
             }
