@@ -183,16 +183,19 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			ScatteredERecId = iscatR;    
 		}else{ScatteredERecId = -999;}
 		
+		double maxEEnergy = -1.0; // Initialize with a value lower than any physical energy
+		ScatteredEGenId = -999; // Default if not found			
 		if(ScatElecGenId->GetSize() > 0){
-			ScatteredEGenId = -999; // Default if not found	
-			int iscatG;	
 			for(int iele = 0; iele < ScatElecGenId->GetSize(); ++iele){
-				if( (*TrkGenPDG)[(*ScatElecGenId)[iele]] == 11 ){
-					iscatG = (*ScatElecGenId)[iele];
-					//break;
+				int iscatG = (*ScatElecGenId)[iele];	
+				if( (*TrkGenPDG)[iscatG] == 11 ){
+					double currentEnergy = (*TrkGenE)[iscatG];
+					if (currentEnergy > maxEnergy) {
+                		maxEnergy = currentEnergy;
+                		ScatteredEGenId = iscatG;
+           			}
 				}
-			}
-			ScatteredEGenId = iscatG;    
+			} 
 		}
 		
 		// other quantities
