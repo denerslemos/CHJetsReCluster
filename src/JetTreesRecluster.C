@@ -189,9 +189,9 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
 			for(int iele = 0; iele < ScatElecGenId->GetSize(); ++iele){
 				int iscatG = (*ScatElecGenId)[iele];	
 				if( (*TrkGenPDG)[iscatG] == 11 ){
-					double currentEnergy = (*TrkGenE)[iscatG];
-					if (currentEnergy > maxEnergy) {
-                		maxEnergy = currentEnergy;
+					double currentEEnergy = (*TrkGenE)[iscatG];
+					if (currentEEnergy > maxEEnergy) {
+                		maxEEnergy = currentEEnergy;
                 		ScatteredEGenId = iscatG;
            			}
 				}
