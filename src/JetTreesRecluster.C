@@ -96,7 +96,11 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
     std::vector<TTree*> trees;
     for (auto R : R_values) {
 
-        TString rStr = Form("JetTree_R0p%d", int(R * 10)); // e.g. R=0.1 → R0p1
+		TString rStr;
+		if (R < 1.0) { rStr = Form("JetTree_R0p%d", int(R * 10));   // R=0.1 -> R0p1
+		} else { rStr = Form("JetTree_R%dp%d", int(R), int((R - int(R)) * 10));        // R=1.2 -> R1p2
+		}
+		
         TTree *tree = new TTree(rStr, rStr);
 		// Event information
         tree->Branch("NEVENTS", &NEVENTS, "NEVENTS/I");
