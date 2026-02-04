@@ -1,77 +1,90 @@
 #!/usr/bin/env python3
 import os
 import subprocess
-from math import ceil
 import argparse
 
-parser = argparse.ArgumentParser(description="Submit ePIC jobs to Condor")
-parser.add_argument("--tag", required=True, help="Job tag prefix, e.g. eAu_test")
-parser.add_argument("--exec", default="./job.sh", help="Shell script executable (job.sh)")
-parser.add_argument("--input-list", default="./input.list", help="Text file containing input ROOT files")
-parser.add_argument("--output-dir", default="./results", help="Directory where output ROOT files go")
-parser.add_argument("--njobs", type=int, default=1, help="Number of Condor jobs to split input list")
-parser.add_argument("--job-args", required=True, help="Arguments after input/output: '0.2,0.4,0.6 1 5'")
+def main():
+    parser = argparse.ArgumentParser(description="V24-Ready ePIC Condor Submitter")
+    parser.add_argument("--tag", required=True, help="Job tag prefix, e.g. eAu_test")
+    parser.add_argument("--exec", default="./job.sh", help="Shell script executable")
+    parser.add_argument("--input-list", default="./input.list", help="Text file with input ROOT files")
+    parser.add_argument("--output-dir", default="./results", help="Directory for output ROOT files")
+    parser.add_argument("--njobs", type=int, default=1, help="Number of jobs to split into")
+    parser.add_argument("--job-args", required=True, help="Args: 'RVALS removeelectrons nhitcut'")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-Exec = args.exec
-Tag = args.tag
-OutputDir = args.output_dir
-JOB_ARGS = args.job_args
-NJobs = args.njobs
+    # 1. Read and validate input list
+    if not os.path.exists(args.input_list):
+        print(f"Error: {args.input_list} not found.")
+        return
 
-# Read input file list
-with open(args.input_list) as f:
-    files = [line.strip() for line in f if line.strip()]
+    with open(args.input_list) as f:
+        files = [line.strip() for line in f if line.strip()]
 
-# Prepare directories
-os.makedirs(OutputDir, exist_ok=True)
-job_folder = os.path.join(OutputDir, "job")
-os.makedirs(job_folder, exist_ok=True)
+    total_files = len(files)
+    n_requested = min(args.njobs, total_files)
 
-# Split input files across jobs
-chunk_size = ceil(len(files) / NJobs)
+    # 2. Prepare Directories
+    os.makedirs(args.output_dir, exist_ok=True)
+    job_folder = os.path.join(args.output_dir, "job")
+    os.makedirs(job_folder, exist_ok=True)
 
-for i in range(NJobs):
-    filenumber = i + 1
-    start = i * chunk_size
-    end = start + chunk_size
-    files_for_job = files[start:end]
+    master_condor_file = os.path.join(job_folder, f"submit_{args.tag}.sub")
+    item_list_file = os.path.join(job_folder, f"{args.tag}.items")
 
-    if not files_for_job:
-        continue
+    # 3. Partition files and prepare the Item List
+    # We create the small input text files now, but we don't write the .sub file yet.
+    job_rows = []
+    print(f"Partitioning {total_files} files into {n_requested} jobs...")
 
-    # Create per-job input list
-    job_input_txt = os.path.join(job_folder, f"{Tag}_{filenumber}_input.txt")
-    with open(job_input_txt, "w") as ftxt:
-        ftxt.write("\n".join(files_for_job))
+    for i in range(n_requested):
+        filenumber = i + 1
+        start = i * total_files // n_requested
+        end = (i + 1) * total_files // n_requested
+        files_for_job = files[start:end]
 
-    # Output ROOT file
-    output_file = os.path.join(OutputDir, f"{Tag}_{filenumber}.root")
+        # Create the specific input list for this job chunk
+        job_input_txt = os.path.join(job_folder, f"{args.tag}_{filenumber}_input.txt")
+        with open(job_input_txt, "w") as ftxt:
+            ftxt.write("\n".join(files_for_job))
 
-    # Condor log files
-    job_tag = f"{Tag}_{filenumber}"
-    OutFile = os.path.join(job_folder, f"{job_tag}.out")
-    ErrFile = os.path.join(job_folder, f"{job_tag}.err")
-    LogFile = os.path.join(job_folder, f"{job_tag}.log")
-    condor_file = os.path.join(job_folder, f"CondorFile_{job_tag}")
+        output_root = os.path.join(args.output_dir, f"{args.tag}_{filenumber}.root")
+        job_tag = f"{args.tag}_{filenumber}"
 
-    # Arguments passed to job.sh
-    # Format: input.txt output.root RVALS removeelectrons nhitcut
-    args_str = f"{job_input_txt} {output_file} {JOB_ARGS}"
+        # Each row defines: InFile, OutFile, Tag
+        job_rows.append(f"{job_input_txt}, {output_root}, {job_tag}")
 
-    # Write Condor submit file
-    with open(condor_file, "w") as f:
+    # Write the manifest (item list) to disk
+    with open(item_list_file, "w") as fitem:
+        fitem.write("\n".join(job_rows))
+
+    # 4. Write the SINGLE Submit File (Outside the loop)
+    # This uses the modern 'queue ... from' syntax to avoid deprecation warnings.
+    with open(master_condor_file, "w") as f:
+        f.write("# HTCondor Submit File - V24 Compatible\n")
         f.write("Universe       = vanilla\n")
-        f.write(f"Executable     = {Exec}\n")
+        f.write(f"Executable     = {args.exec}\n")
         f.write("getenv         = true\n")
         f.write("request_memory = 4G\n")
-        f.write(f"Arguments      = {args_str}\n")
-        f.write(f"Output         = {OutFile}\n")
-        f.write(f"Error          = {ErrFile}\n")
-        f.write(f"Log            = {LogFile}\n")
-        f.write("Queue\n")
+        f.write("notification   = Never\n\n")
 
-    print(f"Submitting job {filenumber}: {Exec} {args_str}")
-    subprocess.run(["condor_submit", condor_file], check=True)
+        # Map the columns from our .items file to Condor variables
+        f.write(f"Arguments      = $(InFile) $(OutFile) {args.job_args}\n")
+        f.write(f"Output         = {job_folder}/$(Tag).out\n")
+        f.write(f"Error          = {job_folder}/$(Tag).err\n")
+        f.write(f"Log            = {job_folder}/$(Tag).log\n\n")
 
+        # The single Queue statement that replaces 1000 individual ones
+        f.write(f"queue InFile, OutFile, Tag from {item_list_file}\n")
+
+    # 5. Submit to Cluster
+    print(f"Submitting to Condor...")
+    try:
+        subprocess.run(["condor_submit", master_condor_file], check=True)
+        print("Submission successful.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during submission: {e}")
+
+if __name__ == "__main__":
+    main()
