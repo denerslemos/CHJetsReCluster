@@ -216,7 +216,7 @@ void JetTreesRecluster(TString InputFileList, TString OutputFile, std::vector<fl
         for (unsigned int i = 0; i < TrkRecoPx->GetSize(); ++i) {
             TVector3 mom((*TrkRecoPx)[i], (*TrkRecoPy)[i], (*TrkRecoPz)[i]);
             if ( mom.Pt() < minCstPt || mom.Pt() > maxCstPt ) continue;
-            if ( nhitcut != 0 && (*TrkRecoNhits)[i] < nhitcut ) continue;
+            if ( (*TrkRecoNhits)[i] < nhitcut ) continue;
             if ( removeelectrons == 1 ){
 				// Find electron
 			    int chargePartIndex = i; 
